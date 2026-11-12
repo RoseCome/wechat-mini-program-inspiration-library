@@ -1,0 +1,1 @@
+{"engines":{"node":">=20"},"name":"wechat-mini-program-inspiration-library","scripts":{"fetch":"node scripts/fetch.js","fetch:dry":"node scripts/fetch.js --dry-run","start":"node server.js"},"type":"module","version":"1.0.0"}

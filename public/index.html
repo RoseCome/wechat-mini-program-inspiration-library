@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>微信小程序灵感库</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--ink:#1f1d1a;--muted:#8a857e;--line:#e8e4de;--accent:#b45309;--green:#15803d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 120px}
+header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-size:22px;margin:0}
+header .sub{color:var(--muted);font-size:13px}
+header .fetch-link{background:none;border:0;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
+header .fetch-link:hover{color:var(--ink)}
+.counts{color:var(--muted);font-size:13px;margin:8px 0 0}
+.bar{display:flex;gap:8px;overflow-x:auto;white-space:nowrap;padding:12px 0 4px;scrollbar-width:none}
+.bar::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px;flex:0 0 auto}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;margin:10px 0 4px;background:#fff}
+.banner{display:none;background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;margin:10px 0;font-size:14px}
+.banner.show{display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media(min-width:768px){.grid{grid-template-columns:1fr 1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}
+.card.seen{opacity:.62}
+.card.fresh{border-color:#86efac;box-shadow:0 0 0 2px #bbf7d0}
+.card h2{font-size:16px;margin:0 0 4px;line-height:1.4}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.tag{font-size:11px;border-radius:999px;padding:2px 8px;background:#f1ede8;color:#57534e}
+.tag.personal{background:#dcfce7;color:#166534}.tag.enterprise{background:#dbeafe;color:#1e40af}.tag.license{background:#fee2e2;color:#991b1b}
+.tag.fresh{background:#dcfce7;color:#166534}
+.card p{margin:6px 0;font-size:13.5px}
+.card .lab{color:var(--muted);font-size:12px}
+.card .risk{background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 10px;font-size:13px}
+.card .foot{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.card button,.card select{font-size:13px;padding:5px 9px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+.card button.fav.on{color:#d97706;border-color:#fbbf24}
+.log{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.log h3{margin:0 0 8px;font-size:16px}
+.log details{border-top:1px solid var(--line);padding:8px 0}
+.log summary{cursor:pointer}
+.settings{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.settings label{display:block;font-size:13px;color:var(--muted);margin:8px 0 2px}
+.settings input,.settings select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.settings button{margin-top:12px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--ink);color:#fff;cursor:pointer}
+#fab{position:fixed;right:20px;bottom:20px;width:52px;height:52px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:10}
+#fabmenu{position:fixed;right:20px;bottom:84px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;z-index:10;overflow:hidden}
+#fabmenu.show{display:block}
+#fabmenu button{display:block;width:160px;text-align:left;padding:12px 16px;border:0;background:#fff;cursor:pointer;font-size:15px}
+#fabmenu button:hover{background:#f6f5f2}
+#addform{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20;align-items:center;justify-content:center;padding:16px}
+#addform.show{display:flex}
+#addform .box{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:520px;max-height:90vh;overflow:auto}
+#addform label{display:block;font-size:13px;color:var(--muted);margin:8px 0 2px}
+#addform input,#addform select,#addform textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+#addform textarea{min-height:64px}
+#addform button{margin-top:12px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--ink);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>微信小程序灵感库</h1>
+    <button class="fetch-link" id="fetchLink" title="点一下抓一批新灵感">获取新灵感</button>
+    <span class="sub">年轻人小程序 / 工具 · 派对 / 年轻人 / 工具三类</span>
+  </header>
+  <p class="counts" id="counts"></p>
+  <div class="bar" id="catBar"></div>
+  <div class="bar" id="viewBar"></div>
+  <input class="search" id="search" placeholder="搜标题、玩法、为什么推荐…">
+  <div class="banner" id="banner"></div>
+  <div class="grid" id="grid"></div>
+  <div class="log" id="logBox"><h3>抓取记录</h3><div id="logList">加载中…</div></div>
+  <div class="settings" id="settingsBox">
+    <h3 style="margin:0">定时抓取设置</h3>
+    <p style="color:var(--muted);font-size:13px;margin:6px 0">默认一天抓 4 次（约每 6 小时一次），在 NAS 上用 cron / 青龙 / 系统计划任务跑 <code>node scripts/fetch.js</code> 即可；也可以先跑 <code>node scripts/fetch.js --check-due</code> 判断本轮是否到时间。没有配模型 API 时，抓取只记一条任务并跳过，绝不编造灵感。</p>
+    <label>一天抓几次（FETCH_TIMES_PER_DAY）</label>
+    <select id="setTimes"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>6</option><option>8</option></select>
+    <label>每批抓几个（FETCH_BATCH_SIZE，默认 12）</label>
+    <input id="setBatch" type="number" min="1" max="20" value="12">
+    <label>模型接口地址（MODEL_API_BASE_URL，OpenAI 兼容）</label>
+    <input id="setBase" placeholder="https://api.openai.com/v1">
+    <label>模型名（MODEL_NAME，如 gpt-4o-mini / deepseek-chat）</label>
+    <input id="setModel" placeholder="gpt-4o-mini">
+    <label>模型 API Key（MODEL_API_KEY，只放服务器 .env 更安全；这里填了只存库里，不显示原文）</label>
+    <input id="setKey" type="password" placeholder="未配置则留空">
+    <div id="setStatus" style="font-size:13px;color:var(--muted);margin-top:6px"></div>
+    <button id="saveSettings">保存设置</button>
+    <button id="fetchNow" style="background:#fff;color:var(--ink)">立即抓取一次</button>
+  </div>
+</div>
+<button id="fab" title="添加">+</button>
+<div id="fabmenu">
+  <button id="menuFetch">获取灵感</button>
+  <button id="menuAdd">加个灵感</button>
+</div>
+<div id="addform"><div class="box">
+  <h3 style="margin:0">加个灵感</h3>
+  <label>标题</label><input id="fTitle">
+  <label>分类</label><select id="fCat"><option value="party">派对游戏</option><option value="youth">年轻人</option><option value="tool">工具</option></select>
+  <label>一句话卖点</label><textarea id="fPitch"></textarea>
+  <label>核心玩法 / 做法</label><textarea id="fHow"></textarea>
+  <label>为什么推荐（海外原型优先）</label><textarea id="fWhy"></textarea>
+  <label>怎么赚钱</label><textarea id="fMoney"></textarea>
+  <label>风险与注意</label><textarea id="fRisks"></textarea>
+  <label>主体</label><select id="fSubject"><option value="personal">个人可做</option><option value="enterprise">需企业主体</option><option value="license">需资质</option></select>
+  <button id="saveAdd">保存</button>
+  <button id="cancelAdd" style="background:#fff;color:var(--ink)">取消</button>
+</div></div>
+<script>
+const $=s=>document.querySelector(s);
+let state={category:'',subject:'',view:'all',search:'',batch:null,freshIds:new Set()};
+const CAT={party:'派对游戏',youth:'年轻人',tool:'工具'};
+const SUBJ={personal:'个人可做',enterprise:'需企业主体',license:'需资质'};
+const STATUS={want:'想做',evaluating:'评估中',started:'已立项',dropped:'先放下'};
+async function api(a,b={}){const r=await fetch('/api/'+a,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const j=await r.json();if(!j.ok)throw new Error(j.error||'请求失败');return j}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function renderCats(cats){
+  $('#catBar').innerHTML=['<button class="chip'+(state.category===''?' on':'')+'" data-c="">全部</button>'].concat((cats||[]).map(c=>`<button class="chip${state.category===c.id?' on':''}" data-c="${c.id}">${CAT[c.id]||c.id}（${c.count}）</button>`)).join('')
+    +['personal','enterprise','license'].map(s=>`<button class="chip${state.subject===s?' on':''}" data-s="${s}">${SUBJ[s]}</button>`).join('');
+  document.querySelectorAll('#catBar .chip').forEach(el=>el.onclick=()=>{
+    if(el.dataset.c!==undefined){state.category=el.dataset.c;state.subject=''}
+    else{state.subject=state.subject===el.dataset.s?'':el.dataset.s}
+    load();
+  });
+}
+function renderViews(){
+  const views=[['all','全部'],['unseen','只看未看'],['seen','只看已看'],['favorites','只看收藏']];
+  $('#viewBar').innerHTML=views.map(([v,l])=>`<button class="chip${state.view===v?' on':''}" data-v="${v}">${l}</button>`).join('')
+    +(state.batch?`<button class="chip on" data-v="batch">只看这批 ×</button>`:'');
+  document.querySelectorAll('#viewBar .chip').forEach(el=>el.onclick=()=>{
+    if(el.dataset.v==='batch'){state.batch=null}else{state.view=el.dataset.v;state.batch=null}
+    load();
+  });
+}
+async function load(){
+  const q={};if(state.category)q.category=state.category;if(state.subject)q.subject=state.subject;
+  if(state.view==='favorites')q.favorites=true;if(state.view==='unseen')q.unseen=true;if(state.view==='seen')q.seen=true;
+  if(state.search)q.search=state.search;if(state.batch)q.batch=state.batch;
+  const j=await api('listideas',q);
+  renderCats(j.categories);renderViews();
+  $('#counts').textContent=`共 ${j.total} 条 · 未看 ${j.unseenCount} 条 · 已看 ${j.seenCount} 条 · 收藏 ${j.favoriteCount} 条`;
+  $('#grid').innerHTML=j.ideas.map(x=>`<article class="card${x.seen?' seen':''}${state.freshIds.has(x.id)?' fresh':''}" data-id="${x.id}">
+    <h2>${esc(x.title)}</h2>
+    <div class="tags"><span class="tag">${CAT[x.category]||x.category}</span><span class="tag ${x.subject}">${SUBJ[x.subject]||x.subject}</span>${x.source==='fetched'?`<span class="tag fresh">新抓取 · ${esc((x.createdAt||'').slice(0,10))}</span>`:''}${x.favorite?'<span class="tag">★ 已收藏</span>':''}${x.seen?'<span class="tag">已看</span>':''}</div>
+    <p>${esc(x.pitch)}</p>
+    <p><span class="lab">玩法：</span>${esc(x.how)}</p>
+    <p><span class="lab">为什么推荐：</span>${esc(x.why)}</p>
+    <p><span class="lab">怎么赚钱：</span>${esc(x.monetization)}</p>
+    ${x.risks?`<p class="risk"><span class="lab">风险与注意：</span>${esc(x.risks)}</p>`:''}
+    ${x.subjectNote?`<p><span class="lab">主体与资质：</span>${esc(x.subjectNote)}</p>`:''}
+    <div class="foot">
+      <button class="fav${x.favorite?' on':''}" data-act="fav">${x.favorite?'★ 已收藏':'☆ 收藏'}</button>
+      <select data-act="status"><option value="">状态</option>${Object.entries(STATUS).map(([v,l])=>`<option value="${v}"${x.status===v?' selected':''}>${l}</option>`).join('')}</select>
+      <span style="color:var(--muted);font-size:12px">难度 ${'★'.repeat(x.difficulty||1)}${'☆'.repeat(3-(x.difficulty||1))}</span>
+      ${x.source==='user'?`<button data-act="del">删除</button>`:''}
+    </div></article>`).join('')||'<p style="color:var(--muted)">没有符合条件的灵感。</p>';
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click',async e=>{
+      const id=Number(card.dataset.id);
+      const act=e.target.dataset.act;
+      if(act==='fav'){e.stopPropagation();await api('togglefavorite',{id});load();return}
+      if(act==='status'){return}
+      if(act==='del'){e.stopPropagation();if(confirm('删除这条自己加的灵感？')){await api('deleteidea',{id});load()}return}
+      if(!card.classList.contains('seen')){await api('markseen',{id});card.classList.add('seen')}
+    });
+    const sel=card.querySelector('select[data-act=status]');
+    sel.addEventListener('change',async e=>{e.stopPropagation();await api('setstatus',{id:Number(card.dataset.id),status:sel.value||null});});
+  });
+}
+async function loadLog(){
+  const j=await api('listfetchlog');
+  $('#logList').innerHTML=j.batches.length?j.batches.map(b=>`<details><summary>第 ${b.id} 批 · ${esc(b.fetchedAt.slice(0,10))} ${esc(b.fetchedAt.slice(11,16))} · 新增 ${b.addedCount} 条 <button data-batch="${b.id}" style="font-size:12px;padding:2px 8px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer">只看这批</button></summary><p style="font-size:13px;color:var(--muted)">${b.titles.map(esc).join(' / ')}</p></details>`).join(''):'暂无抓取记录，点「获取新灵感」抓第一批。';
+  document.querySelectorAll('#logList [data-batch]').forEach(btn=>btn.onclick=e=>{e.preventDefault();state.batch=Number(btn.dataset.batch);state.view='all';load();window.scrollTo({top:0,behavior:'smooth'})});
+}
+async function loadSettings(){
+  const j=await api('getfetchsettings');const s=j.settings;
+  $('#setTimes').value=String(s.fetch_times_per_day);$('#setBatch').value=s.fetch_batch_size;
+  $('#setBase').value=s.model_api_base_url||'';$('#setModel').value=s.model_name||'';
+  $('#setStatus').textContent=`模型 API：${s.has_model_api_key?'已配置（'+s.model_api_key_mask+'）':'未配置'} · 未配置时抓取会跳过、不编造灵感`;
+}
+async function doFetch(){
+  const b=$('#banner');b.classList.add('show');b.textContent='正在抓取新灵感…（没有配模型 API 时会直接跳过并记录）';
+  try{
+    await api('fetchnewideas');
+    for(let i=0;i<30;i++){await new Promise(r=>setTimeout(r,2000));const s=await api('getfetchstatus');if(!s.running){b.textContent=s.last_run?`抓取完成：${s.last_run.status}，新增 ${s.last_run.added} 条。${s.last_run.note||''}`:'抓取完成。';break}}
+    state.batch=null;state.freshIds=new Set();await load();await loadLog();
+  }catch(e){b.textContent='抓取失败：'+e.message}
+}
+$('#fetchLink').onclick=doFetch;
+$('#fab').onclick=()=>$('#fabmenu').classList.toggle('show');
+$('#menuFetch').onclick=()=>{$('#fabmenu').classList.remove('show');doFetch()};
+$('#menuAdd').onclick=()=>{$('#fabmenu').classList.remove('show');$('#addform').classList.add('show')};
+$('#cancelAdd').onclick=()=>$('#addform').classList.remove('show');
+$('#saveAdd').onclick=async()=>{
+  const body={title:$('#fTitle').value,category:$('#fCat').value,pitch:$('#fPitch').value,how:$('#fHow').value,why:$('#fWhy').value,monetization:$('#fMoney').value,risks:$('#fRisks').value,subject:$('#fSubject').value};
+  try{await api('addidea',body);$('#addform').classList.remove('show');load()}catch(e){alert(e.message)}
+};
+$('#search').addEventListener('input',e=>{state.search=e.target.value.trim();load()});
+$('#saveSettings').onclick=async()=>{
+  await api('savefetchsettings',{settings:{fetch_times_per_day:Number($('#setTimes').value),fetch_batch_size:Number($('#setBatch').value),model_api_base_url:$('#setBase').value,model_name:$('#setModel').value,model_api_key:$('#setKey').value}});
+  $('#setKey').value='';loadSettings();alert('已保存');
+};
+$('#fetchNow').onclick=doFetch;
+load();loadLog();loadSettings();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+services:
+  inspiration-library:
+    build: .
+    # 只绑局域网：把 192.168.1.10 换成 NAS/主机的局域网 IP
+    ports:
+      - "192.168.1.10:3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_PATH=/app/data/app.db
+    restart: unless-stopped
