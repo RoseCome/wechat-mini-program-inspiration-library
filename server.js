@@ -1,7 +1,7 @@
 // 微信小程序灵感库 · 自部署版后端（零外部依赖，Node 20+ 原生 http + node:sqlite）
 // 启动：node server.js，端口环境变量 PORT（默认 3000），监听 0.0.0.0。
 // 数据：DATABASE_PATH 环境变量，默认./data/app.db；库为空时自动导入
-// data/ideas-seed.json（66 条）与 data/fetch-log-seed.json（2 批抓取记录）。
+// data/ideas-seed.json（166 条）与 data/fetch-log-seed.json（3 批抓取记录）。
 // 定时抓取：见 scripts/fetch.js 与 crons/auto-fetch.md。没有配模型 API 时，
 // 抓取只记一条任务（保存完整提示词）并跳过，绝不编造灵感。
 // 注意：本文件不含任何真实凭据；模型 API Key 只放.env（已 gitignore）或
